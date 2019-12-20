@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Rendering.PostProcessing;
+//using UnityEngine.Rendering.PostProcessing;
 
 public class optionsmenuscript : MonoBehaviour {
     public static bool show_menu = false;
@@ -9,32 +9,32 @@ public class optionsmenuscript : MonoBehaviour {
     public GameObject menuOptions;
     public GameObject optionsContent;
 
-    private PostProcessLayer postProcessLayer;
+    /*private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
     private AutoExposure autoExposure;
     private Bloom bloom;
     private Vignette vignette;
-    private AmbientOcclusion ambientOcclusion;
+    private AmbientOcclusion ambientOcclusion;*/
 
-    public void OnApplicationPause() {
-        UnlockCursor();
-    }
+   // public void OnApplicationPause() {
+     //   UnlockCursor();
+    //}
 
-    public void OnApplicationFocus() {
-        if (!show_menu) {
-            LockCursor();
-        }
-    }
+    //public void OnApplicationFocus() {
+    //    if (!show_menu) {
+     //       LockCursor();
+    //    }
+    //}
 
     public void Start() {
         LockCursor();
 
-        postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
+        /*postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
         autoExposure = postProcessVolume.profile.GetSetting<AutoExposure>();
         bloom = postProcessVolume.profile.GetSetting<Bloom>();
         vignette = postProcessVolume.profile.GetSetting<Vignette>();
-        ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
+        ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();*/
 
         if (PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
@@ -168,7 +168,7 @@ public class optionsmenuscript : MonoBehaviour {
         UnityEngine.Application.Quit();
     }
 
-    public void SetPostProcessingEnabled(Toggle toggle) {
+    /*public void SetPostProcessingEnabled(Toggle toggle) {
         postProcessLayer.enabled = toggle.isOn;
     }
 
@@ -202,7 +202,7 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void SetVignette(bool enabled) {
         vignette.active = enabled;
-    }
+    }*/
 
     public void OpenModsFolder() {
         Application.OpenURL(ModManager.GetModsfolderPath());

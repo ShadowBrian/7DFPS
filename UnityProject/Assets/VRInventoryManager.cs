@@ -50,7 +50,7 @@ public class VRInventoryManager : MonoBehaviour
 
         for (int i = 0; i < slots.Length-1; i++) {
             if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
-                if (Vector3.Distance(VRInputController.instance.LeftHand.transform.position, slots[i].position) < 0.05f) {
+                if (Vector3.Distance(VRInputController.instance.LhandScr.offsetPos.position, slots[i].position) < 0.05f) {
                     ActiveSlot = i;
                     break;
                 }
@@ -59,7 +59,7 @@ public class VRInventoryManager : MonoBehaviour
                 }
             }
             else {
-                if (Vector3.Distance(VRInputController.instance.RightHand.transform.position, slots[i].position) < 0.05f) {
+                if (Vector3.Distance(VRInputController.instance.RhandScr.offsetPos.position, slots[i].position) < 0.05f) {
                     ActiveSlot = i;
                     break;
                 }
@@ -70,13 +70,19 @@ public class VRInventoryManager : MonoBehaviour
         }
 
         if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
-            if (Vector3.Distance(VRInputController.instance.LeftHand.transform.position, TapePL.position) < 0.05f) {
+            if (Vector3.Distance(VRInputController.instance.LhandScr.offsetPos.position, TapePL.position) < 0.05f) {
                 TapePlayer = true;
+            }
+            else {
+                TapePlayer = false;
             }
         }
         else {
-            if (Vector3.Distance(VRInputController.instance.RightHand.transform.position, TapePL.position) < 0.05f) {
+            if (Vector3.Distance(VRInputController.instance.RhandScr.offsetPos.position, TapePL.position) < 0.05f) {
                 TapePlayer = true;
+            }
+            else {
+                TapePlayer = false;
             }
         }
     }

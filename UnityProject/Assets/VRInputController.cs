@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
+//using Valve.VR;
 
 public enum HandSide {
     Right,
@@ -14,17 +14,19 @@ public class VRInputController : MonoBehaviour
 
     public GameObject LeftHand,RightHand,Head,InventoryPos;
 
+    public HandScript LhandScr, RhandScr;
+
     public float TallestHead = 0.1f;
 
-    public SteamVR_Action_Vector2 Locomotion;
+    public OVRInput.Axis2D Locomotion;
 
-    public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness;
+    public OVRInput.Button ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness;
 
     public GameObject LHandSphere, RHandSphere;
 
     public Renderer cylinderRenderer;
 
-    public SteamVR_Action_Pose ControllerPose;
+    //public SteamVR_Action_Pose ControllerPose;
 
     private void Awake() {
         instance = this;
@@ -41,14 +43,20 @@ public class VRInputController : MonoBehaviour
             LHandSphere.SetActive(true);
             RHandSphere.SetActive(false);
         }
+
+        OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
+        OVRManager.cpuLevel = 2;
+        OVRManager.gpuLevel = 2;
+        //Camera.main.allowDynamicResolution = true;
+        
     }
 
     public Vector3 GetAimPos(HandSide hand) {
         switch (hand) {
             case HandSide.Right:
-                return RightHand.transform.position - GetAimDir(hand)*0.02f;
+                return RightHand.transform.TransformPoint(RhandScr.offsetPos.localPosition) - GetAimDir(hand)*0.02f;
             case HandSide.Left:
-                return LeftHand.transform.position - GetAimDir(hand) * 0.02f;
+                return LeftHand.transform.TransformPoint(RhandScr.offsetPos.localPosition) - GetAimDir(hand) * 0.02f;
             default:
                 return RightHand.transform.position;
         }
@@ -64,21 +72,21 @@ public class VRInputController : MonoBehaviour
         if (cylinderRenderer != null) {
             switch (hand) {
                 case HandSide.Right:
-                    if (cylinderRenderer.bounds.Contains(RightHand.transform.position)) {
-                        return -ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+                    if (cylinderRenderer.bounds.Contains(RightHand.transform.TransformPoint(RhandScr.offsetPos.localPosition))) {
+                        return -OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch).y;
                     }
                     else {
                         return 0f;
                     }
                 case HandSide.Left:
-                    if (cylinderRenderer.bounds.Contains(LeftHand.transform.position)) {
-                        return -ControllerPose.GetVelocity(SteamVR_Input_Sources.LeftHand).y;
+                    if (cylinderRenderer.bounds.Contains(LeftHand.transform.TransformPoint(LhandScr.offsetPos.localPosition))) {
+                        return -OVRInput.GetLocalControllerVelocity(OVRInput.Controller.LTouch).y;
                     }
                     else {
                         return 0f;
                     }
                 default:
-                    return ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+                    return -OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch).y;
             }
         }
         else {
@@ -89,9 +97,9 @@ public class VRInputController : MonoBehaviour
     public Vector3 GetAimDir(HandSide hand) {
         switch (hand) {
             case HandSide.Right:
-                return -RightHand.transform.up*1.5f + RightHand.transform.forward;
+                return RhandScr.offsetPos.forward;
             case HandSide.Left:
-                return -LeftHand.transform.up*1.5f + LeftHand.transform.forward;
+                return LhandScr.offsetPos.forward;
             default:
                 return RightHand.transform.forward;
         }
@@ -109,86 +117,86 @@ public class VRInputController : MonoBehaviour
     }
 
     public Vector2 GetWalkVector(HandSide hand) {
-        SteamVR_Input_Sources source = (hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand);
-        Vector3 rawAxis = new Vector3(Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).x, 0, Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).y);
+        OVRInput.Controller source = (hand == HandSide.Left ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch);
+        Vector3 rawAxis =  new Vector3(OVRInput.Get(Locomotion,source).x, 0, OVRInput.Get(Locomotion, source).y);
         rawAxis = Head.transform.localRotation * rawAxis;
         return new Vector2(rawAxis.x,rawAxis.z);
     }
 
     public bool GetRotateLeft(HandSide hand) {
-        return RotateLeft.GetStateDown(hand == HandSide.Left?SteamVR_Input_Sources.LeftHand: SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(RotateLeft,(hand == HandSide.Left? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch)) && OVRInput.GetDown(JumpButton, (hand == HandSide.Right ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GetRotateRight(HandSide hand) {
-        return RotateRight.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(RotateRight, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch)) && OVRInput.GetDown(JumpButton, (hand == HandSide.Right ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool JumpPress(HandSide hand) {
-        return JumpButton.GetState(hand == HandSide.Right ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(JumpButton, (hand == HandSide.Left ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch));
     }
 
     public bool CollectPress(HandSide hand) {
-        return CollectButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(CollectButton, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool ActionPress(HandSide hand) {
-        return ActionButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(ActionButton, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract(HandSide hand) {
-        return GunInteract1Btn.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(GunInteract1Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteractLongPress(HandSide hand) {
-        return GunInteractLongBtn.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(GunInteractLongBtn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract2(HandSide hand) {
-        return GunInteract2Btn.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(GunInteract2Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract3(HandSide hand) {
-        return GunInteract3Btn.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.Get(GunInteract3Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool ActionPressDown(HandSide hand) {
-        return ActionButton.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(ActionButton, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteractDown(HandSide hand) {
-        return GunInteract1Btn.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(GunInteract1Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteractLongPressDown(HandSide hand) {
-        return GunInteractLongBtn.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(GunInteractLongBtn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract2Down(HandSide hand) {
-        return GunInteract2Btn.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(GunInteract2Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract3Down(HandSide hand) {
-        return GunInteract3Btn.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetDown(GunInteract3Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool ActionPressUp(HandSide hand) {
-        return ActionButton.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetUp(ActionButton, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteractUp(HandSide hand) {
-        return GunInteract1Btn.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetUp(GunInteract1Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteractLongPressUp(HandSide hand) {
-        return GunInteractLongBtn.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetUp(GunInteractLongBtn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract2Up(HandSide hand) {
-        return GunInteract2Btn.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetUp(GunInteract2Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     public bool GunInteract3Up(HandSide hand) {
-        return GunInteract3Btn.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return OVRInput.GetUp(GunInteract3Btn, (hand == HandSide.Left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch));
     }
 
     void Update()
@@ -199,7 +207,7 @@ public class VRInputController : MonoBehaviour
         InventoryPos.transform.localPosition = Head.transform.localPosition - (Vector3.up * TallestHead / 3f);
         InventoryPos.transform.rotation = transform.rotation;
 
-        if (ChangeHandedness.GetStateDown(SteamVR_Input_Sources.Any)) {
+        if (OVRInput.GetDown(ChangeHandedness)) {
             if(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
                 VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Left;
                 VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Right;
@@ -213,15 +221,13 @@ public class VRInputController : MonoBehaviour
                 RHandSphere.SetActive(false);
             }
         }
-        //InventoryPos.transform.LookAt(Head.transform.forward - new Vector3(0, Head.transform.forward.y, 0));
-        //InventoryPos.transform.position += InventoryPos.transform.forward * 0.5f;
     }
 
     private void FixedUpdate() {
-        /*LeftHand.transform.localPosition = ControllerPose.GetLocalPosition(SteamVR_Input_Sources.LeftHand);
-        RightHand.transform.localPosition = ControllerPose.GetLocalPosition(SteamVR_Input_Sources.RightHand);
+        LeftHand.transform.localPosition = OVRInput.GetLocalControllerPosition(OVRInput.Controller.LTouch);
+        RightHand.transform.localPosition = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
 
-        LeftHand.transform.localRotation = ControllerPose.GetLocalRotation(SteamVR_Input_Sources.LeftHand);
-        RightHand.transform.localRotation = ControllerPose.GetLocalRotation(SteamVR_Input_Sources.RightHand);*/
+        LeftHand.transform.localRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.LTouch);
+        RightHand.transform.localRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
     }
 }

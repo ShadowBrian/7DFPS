@@ -46,7 +46,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 if (hand == HandSide.Left) {
                     SlideBounds = SlideObject.bounds;
-                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position) || MagOut) {
+                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.TransformPoint(VRInputController.instance.LhandScr.offsetPos.localPosition)) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {
@@ -55,7 +55,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 else {
                     SlideBounds = SlideObject.bounds;
-                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position) || MagOut) {
+                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.TransformPoint(VRInputController.instance.RhandScr.offsetPos.localPosition)) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {
@@ -79,7 +79,7 @@ public class VRInputBridge : MonoBehaviour
                         }
                         else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, magInsertPos) < 0.075f && VRInputController.instance.LeftHand.transform.position.y < magInsertPos.y) {
+                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.TransformPoint(VRInputController.instance.LhandScr.offsetPos.localPosition), magInsertPos) < 0.075f && VRInputController.instance.LeftHand.transform.TransformPoint(VRInputController.instance.LhandScr.offsetPos.localPosition).y < magInsertPos.y) {
                                 MagOut = false;
                                 return true;
                             }
@@ -94,7 +94,7 @@ public class VRInputBridge : MonoBehaviour
                         }
                         else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE) {
                             Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
-                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.position) < 0.05f) {
+                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.TransformPoint(VRInputController.instance.RhandScr.offsetPos.localPosition)) < 0.075f && VRInputController.instance.LeftHand.transform.TransformPoint(VRInputController.instance.RhandScr.offsetPos.localPosition).y < magInsertPos.y) {
                                 MagOut = false;
                                 return true;
                             }

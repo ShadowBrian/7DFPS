@@ -1594,24 +1594,24 @@ public class AimScript:MonoBehaviour{
     		spring.Update();
     		GameObject bullet = loose_bullets[i];
             if (primaryHand == HandSide.Right) {
-                bullet.transform.position = VRInputController.instance.LeftHand.transform.position;
+                bullet.transform.position = VRInputController.instance.LhandScr.offsetPos.position;
                 /*if(main_camera.GetComponent<Camera>() != null){
                     bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
                 }*/
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
-                bullet.transform.rotation = VRInputController.instance.LeftHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+                bullet.transform.position += VRInputController.instance.LhandScr.offsetPos.rotation * new Vector3(0.02f, -0.01f, 0.0f);
+                bullet.transform.position += VRInputController.instance.LhandScr.offsetPos.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
+                bullet.transform.position += VRInputController.instance.LhandScr.offsetPos.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
+                bullet.transform.rotation = VRInputController.instance.LhandScr.offsetPos.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
             }
             else {
-                bullet.transform.position = VRInputController.instance.RightHand.transform.position;
+                bullet.transform.position = VRInputController.instance.RhandScr.offsetPos.position;
                 /*if(main_camera.GetComponent<Camera>() != null){
                     bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
                 }*/
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
-                bullet.transform.rotation = VRInputController.instance.RightHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+                bullet.transform.position += VRInputController.instance.RhandScr.offsetPos.rotation * new Vector3(0.02f, -0.01f, 0.0f);
+                bullet.transform.position += VRInputController.instance.RhandScr.offsetPos.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
+                bullet.transform.position += VRInputController.instance.RhandScr.offsetPos.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
+                bullet.transform.rotation = VRInputController.instance.RhandScr.offsetPos.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
             }
     		/*var tmp_cs4 = bullet.transform.localScale;
             tmp_cs4.x = spring.state;
