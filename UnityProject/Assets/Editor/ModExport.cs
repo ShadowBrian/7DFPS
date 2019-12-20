@@ -11,7 +11,7 @@ public class ModExport : MonoBehaviour {
 
     public static void ExportBundle() {
         var pathIn = EditorUtility.OpenFolderPanel("Select Mod Folder", "Assets/Mods", "");
-        var pathOut = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_{Path.GetFileName(pathIn)}");
+        var pathOut = Path.Combine("Assets/Mods/BuiltMods", $"modfile_{Path.GetFileName(pathIn)}");
 
         if (pathIn == "") // Happens when the user aborts path selection
             return;
@@ -40,7 +40,7 @@ public class ModExport : MonoBehaviour {
 
         // Build Folder / Bundle
         Directory.CreateDirectory(pathOut);
-        BuildPipeline.BuildAssetBundles(pathOut, buildMap, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
+        BuildPipeline.BuildAssetBundles(pathOut, buildMap, BuildAssetBundleOptions.None, BuildTarget.Android);
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(pathIn)}\" with {files.Length} files");
     }
