@@ -42,3 +42,11 @@ ehthumbs.db
 !UnityProject/Assets/Mods/inbuild_*
 
 # Temp folder
+UnityProject/Assets/Materials/default_laser.mat.meta
+UnityProject/Assets/Materials/default_laser.mat
+UnityProject/Assets/Materials/Masked Tint - Vertex Colors nocull.shader
+UnityProject/Assets/Effects/laser_decal.tga.meta
+UnityProject/Assets/Effects/laser_decal.tga
+UnityProject/Assets/Effects/laser.fbx.meta
+UnityProject/Assets/Effects/laser.fbx
+UnityProject/Assets/Materials/Masked Tint - Vertex Colors nocull.shader.meta
