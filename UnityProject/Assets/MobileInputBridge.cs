@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MobileInputBridge : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class MobileInputBridge : MonoBehaviour
     public List<string> ButtonsPressed = new List<string>();
     public List<string> ButtonsPressedDown = new List<string>();
     public List<string> ButtonsPressedUp = new List<string>();
+
+    public GameObject GyroEnabledText;
+
+    Vector3 GyroDelta, LastGyro;
 
     void Awake()
     {
@@ -144,10 +149,28 @@ public class MobileInputBridge : MonoBehaviour
         
     }
 
-    private void Update() {
-        //MagOut = (aimScript_ref.magazine_instance_in_hand != null);
+    bool GyroAimAdd = false;
 
-        //Debug.DrawLine(VRInputController.instance.RightHand.transform.position, VRInputController.instance.RightHand.transform.position + VRInputController.instance.RightHand.transform.rotation*closeDirection, Color.red);
+    private void Update() {
+        GyroDelta = Vector3.Lerp(GyroDelta,(Input.gyro.rotationRateUnbiased/36f) * 50f,0.5f);
+
+        
+
+        if (ButtonsPressedDown.Contains("gyro toggle")) {
+            GyroAimAdd = !GyroAimAdd;
+            
+            GyroEnabledText.SetActive(GyroAimAdd);
+            if (!SystemInfo.supportsGyroscope) {
+                GyroEnabledText.GetComponent<Text>().text = "Gyroscope not supported by device.";
+            }
+            else {
+                
+                Input.gyro.enabled = true;
+                //LastGyro = (Input.gyro.attitude * Vector3.forward * 100f);
+            }
+        }
+
+        //LastGyro = (Input.gyro.attitude * Vector3.forward * 100f);
     }
 
     public bool GetButtonUp(string input_str) {
@@ -169,13 +192,22 @@ public class MobileInputBridge : MonoBehaviour
 
         float LeftRight = ButtonsPressed.Contains("a") ? -1f : ButtonsPressed.Contains("d") ? 1f : 0f;
 
+        float MouseX = lookJoystick.GetInputDirection().magnitude > 2.5f ? lookJoystick.GetInputDirection().x / 10f : 0;
+
+        float MouseY = lookJoystick.GetInputDirection().magnitude > 2.5f ? lookJoystick.GetInputDirection().y / 10f : 0;
+
+        if (GyroAimAdd) {
+            MouseX += -GyroDelta.y;
+            MouseY += GyroDelta.x;
+        }
+
         switch (input_str) {
             case "Mouse ScrollWheel":
                 return 0f;
             case "Mouse X":
-                return lookJoystick.GetInputDirection().magnitude > 2.5f? lookJoystick.GetInputDirection().x / 10f:0;
+                return MouseX;
             case "Mouse Y":
-                return lookJoystick.GetInputDirection().magnitude > 2.5f ? lookJoystick.GetInputDirection().y / 10f : 0;
+                return MouseY;
             case "Vertical":
                 return ForwBackw;
             case "Horizontal":

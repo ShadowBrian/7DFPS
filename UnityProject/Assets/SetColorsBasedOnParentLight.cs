@@ -28,9 +28,12 @@ public class SetColorsBasedOnParentLight : MonoBehaviour
             return;
         }
 
+        hit = new RaycastHit();
         if (Physics.Raycast(transform.position, transform.forward, out hit, 10f)) {
-
-            transform.localScale = new Vector3(hit.distance / 3f, hit.distance / 3f, hit.distance);
+            transform.localScale = new Vector3(hit.distance / 6f, hit.distance / 6f, hit.distance/2);
+        }
+        else {
+            transform.localScale = new Vector3(1f, 1f, 3f);
         }
 
         if(mat.material.color != parentLight.color) {
