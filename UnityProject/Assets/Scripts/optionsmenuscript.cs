@@ -23,12 +23,12 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void OnApplicationFocus() {
         if(!show_menu) {
-            LockCursor();
+            //LockCursor();
         }
     }
 
     public void Start() {
-        LockCursor();
+        //LockCursor();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
@@ -53,7 +53,7 @@ public class optionsmenuscript:MonoBehaviour{
         }
 
         if(Input.GetMouseButtonDown(0) && !show_menu) {
-            LockCursor();
+            //LockCursor();
         }
     }
 
@@ -65,8 +65,8 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     private void LockCursor() {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     private void UnlockCursor() {

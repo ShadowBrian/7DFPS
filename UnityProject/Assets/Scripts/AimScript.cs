@@ -6,16 +6,16 @@ using System.Collections;
 [System.Serializable]
 public class CharacterInput {
 	public bool GetButtonDown(string input_str) {
-		return Input.GetButtonDown(input_str);
+		return MobileInputBridge.instance.GetButtonDown(input_str);
 	}
 	public bool GetButton(string input_str) {
-		return Input.GetButton(input_str);
+		return MobileInputBridge.instance.GetButton(input_str);
 	}
 	public bool GetButtonUp(string input_str) {
-		return Input.GetButtonUp(input_str);
+		return MobileInputBridge.instance.GetButtonUp(input_str);
 	}
 	public float GetAxis(string input_str) {
-		return Input.GetAxis(input_str);
+		return MobileInputBridge.instance.GetAxis(input_str);
 	}
 };
 
@@ -279,7 +279,7 @@ public class AimScript:MonoBehaviour{
     Quaternion mag_ground_rot;
     Vector3 mag_pos;
     Quaternion mag_rot;
-    GameObject magazine_instance_in_hand;
+    public GameObject magazine_instance_in_hand;
 
     HandMagStage mag_stage = HandMagStage.EMPTY;
     bool queue_drop = false; // In case player pressed 'drop' again while mag is ejecting
