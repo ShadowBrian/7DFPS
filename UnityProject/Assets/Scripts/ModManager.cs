@@ -25,11 +25,13 @@ public class ModManager : MonoBehaviour {
         //Make sure these folders are generated if they don't exist
         if(!Directory.Exists(GetModsfolderPath())) {
             Directory.CreateDirectory(GetModsfolderPath());
-
-            // Generate inbuild mods
-            foreach (var mod in inbuildMods)
-                mod.Generate();
         }
+
+        // Generate inbuild mods
+        foreach (var mod in inbuildMods) {
+            mod.Generate();
+        }
+
 
         // Are mods enabled?
         if(PlayerPrefs.GetInt("mods_enabled", 0) != 1)
@@ -306,13 +308,15 @@ public class InbuildMod {
         try {
             // Create directory
             string directory = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_inbuild_{name}");
-            Directory.CreateDirectory(directory);
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
 
-            // Create files
-            foreach(TextAsset file in files) {
-                string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(file.name));
-                File.Create(path).Close();
-                File.WriteAllBytes(path, file.bytes);
+                // Create files
+                foreach (TextAsset file in files) {
+                    string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(file.name));
+                    File.Create(path).Close();
+                    File.WriteAllBytes(path, file.bytes);
+                }
             }
         } catch (Exception e) {
             Debug.LogError(e);
