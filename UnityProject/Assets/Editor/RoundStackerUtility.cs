@@ -43,7 +43,7 @@ public class RoundStackerUtility : EditorWindow {
             }
 
             // Instantiate new round
-            GameObject round = Instantiate(originObject, originObject.transform.position + offset * i, originObject.transform.rotation * Quaternion.Euler(angularOffset * i), originObject.transform.parent);
+            GameObject round = Instantiate(originObject, rounds[i - 1].transform.rotation * (originObject.transform.position + offset * i) , Quaternion.Euler(angularOffset * i), originObject.transform.parent);
             round.name = $"round_{i * step + startIndex}";
             rounds[i] = round;
             Undo.RegisterCreatedObjectUndo(round, "Undo round creation");
