@@ -43,6 +43,14 @@ public class LevelCreatorScript:MonoBehaviour{
     			child_obj.transform.parent = level.transform;
     		}
     	}
+
+        Light[] lights = GetComponentsInChildren<Light>();
+    	foreach(Light light in lights){
+    		if(light.enabled && light.shadows == LightShadows.Hard) {// 
+                shadowed_lights.Add(light);//light.enabled = false;//
+            }
+    	}
+
     	Transform enemies = level_obj.transform.Find("enemies");
     	if(enemies != null){
     		foreach(Transform child in enemies){
@@ -95,12 +103,7 @@ public class LevelCreatorScript:MonoBehaviour{
     	}
     	level.transform.parent = this.gameObject.transform;
     	
-    	Light[] lights = GetComponentsInChildren<Light>();
-    	foreach(Light light in lights){
-    		if(light.enabled && light.shadows == LightShadows.Hard){
-    			shadowed_lights.Add(light);
-    		}
-    	}
+    	
     	tiles.Add(new TileInstance {state = TileInstanceState.Enabled,
             tile_position = where_cs1,
             tile_object = level,
@@ -117,6 +120,7 @@ public class LevelCreatorScript:MonoBehaviour{
     	for(int i=-6; i <= 6; ++i){
     		CreateTileIfNeeded(i);
     	}
+
     }
     
     public void CreateTileIfNeeded(int which){
@@ -239,7 +243,8 @@ public class LevelCreatorScript:MonoBehaviour{
     		CreateTileIfNeeded(tile_x+i);
     	}
 
-    	if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
+
+        if (PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
     		foreach(Light light in shadowed_lights){
     			if(light == null){
     				Debug.Log("LIGHT IS MISSING");
