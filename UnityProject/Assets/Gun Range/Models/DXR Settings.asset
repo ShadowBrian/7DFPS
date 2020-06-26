@@ -114,6 +114,48 @@ MonoBehaviour:
     m_Value: 1
     min: 0
     max: 1
+--- !u!114 &-5375534210240901513
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31394aa05878563408489d5c1688f3a0, type: 3}
+  m_Name: PathTracing
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  enable:
+    m_OverrideState: 0
+    m_Value: 1
+  layerMask:
+    m_OverrideState: 0
+    m_Value:
+      serializedVersion: 2
+      m_Bits: 4294967295
+  maximumSamples:
+    m_OverrideState: 1
+    m_Value: 4096
+    min: 1
+    max: 4096
+  minimumDepth:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 1
+    max: 10
+  maximumDepth:
+    m_OverrideState: 0
+    m_Value: 4
+    min: 1
+    max: 10
+  maximumIntensity:
+    m_OverrideState: 0
+    m_Value: 10
+    min: 0
+    max: 100
 --- !u!114 &-4390931173211943611
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -255,6 +297,7 @@ MonoBehaviour:
   - {fileID: -5850042869826362843}
   - {fileID: 6452788407889094576}
   - {fileID: -2307354634440810816}
+  - {fileID: -5375534210240901513}
 --- !u!114 &2761618898094082810
 MonoBehaviour:
   m_ObjectHideFlags: 3
