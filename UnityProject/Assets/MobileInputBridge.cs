@@ -192,9 +192,9 @@ public class MobileInputBridge : MonoBehaviour
 
         float LeftRight = ButtonsPressed.Contains("a") ? -1f : ButtonsPressed.Contains("d") ? 1f : 0f;
 
-        float MouseX = lookJoystick.GetInputDirection().magnitude > 2.5f ? lookJoystick.GetInputDirection().x / 10f : 0;
+        float MouseX = lookJoystick.GetInputDirection().magnitude > 1f ? lookJoystick.GetInputDirection().x / 10f : 0;
 
-        float MouseY = lookJoystick.GetInputDirection().magnitude > 2.5f ? lookJoystick.GetInputDirection().y / 10f : 0;
+        float MouseY = lookJoystick.GetInputDirection().magnitude > 1f ? lookJoystick.GetInputDirection().y / 10f : 0;
 
         if (GyroAimAdd) {
             MouseX += -GyroDelta.y;

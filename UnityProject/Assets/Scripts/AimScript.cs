@@ -1537,15 +1537,16 @@ public class AimScript:MonoBehaviour{
     public void UpdateInventoryTransformation() {
     	int i = 0;
     	WeaponSlot slot = null;
-        for(i=0; i<10; ++i){
+        for(i=0; i<5; ++i){
     		slot = weapon_slots[i];
     		if(slot.type == WeaponSlotType.EMPTY){
     			continue;
     		}
     		slot.obj.transform.localScale = new Vector3(1.0f,1.0f,1.0f); 
     	}
-    	for(i=0; i<10; ++i){
+    	for(i=0; i<5; ++i){
     		slot = weapon_slots[i];
+
     		if(slot.type == WeaponSlotType.EMPTY){
     			continue;
     		}
@@ -1553,7 +1554,10 @@ public class AimScript:MonoBehaviour{
     		Quaternion start_rot = main_camera.transform.rotation * slot.start_rot;
     		if(slot.type == WeaponSlotType.EMPTYING){
     			start_pos = slot.obj.transform.position;
-    			start_rot = slot.obj.transform.rotation;
+                if (slot.type == WeaponSlotType.FLASHLIGHT) {
+                    start_pos -= new Vector3(0, 0.02f, 0);
+                }
+                start_rot = slot.obj.transform.rotation;
     			if(Mathf.Abs(slot.spring.vel) <= 0.01f && slot.spring.state <= 0.01f){
     				slot.type = WeaponSlotType.EMPTY;
     				slot.spring.state = 0.0f;
@@ -1561,8 +1565,11 @@ public class AimScript:MonoBehaviour{
     		} 
     		float scale = 0.0f;
     		Vector3 target_pos = main_camera.transform.position;
+            if(slot.type == WeaponSlotType.FLASHLIGHT) {
+                target_pos -= new Vector3(0, 0.02f, 0);
+            }
     		if(main_camera.GetComponent<Camera>() != null){
-    			target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f + i*0.15f), main_camera.GetComponent<Camera>().pixelHeight * 0.17f,0.0f)).direction * 0.3f;
+    			target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f), main_camera.GetComponent<Camera>().pixelHeight * (0.4f + i * 0.15f),0.0f)).direction * 0.3f;
     		}
     		slot.obj.transform.position = mix(
     			start_pos, 
