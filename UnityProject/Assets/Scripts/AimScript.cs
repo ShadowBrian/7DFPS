@@ -1783,8 +1783,8 @@ public class AimScript:MonoBehaviour{
     }
     
     /// <summary> Draws a line in the help menu, can only be called from within OnGUI </summary>
-    private void DrawHelpLine(string text, bool bold = false) {
-        float width = Screen.width * 0.5f;
+    private void DrawHelpLine(string text, bool bold = false, string buttonInput = "") {
+        /*float width = Screen.width * 0.5f;
         help_text_style.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
         help_text_style.fontSize = 18;
 
@@ -1793,7 +1793,11 @@ public class AimScript:MonoBehaviour{
     
         help_text_style.normal.textColor = bold ? Color.white : help_normal_color;
         GUI.Label(new Rect(width - 4.5f, help_text_offset, width, help_text_offset + 30), text, help_text_style);
-        help_text_offset += 20;
+        help_text_offset += 20;*/
+
+        if(bold && !RadialInteractButton.instance.ButtonsToEnable.Contains(buttonInput)) {
+            RadialInteractButton.instance.ButtonsToEnable.Add(buttonInput);
+        }
     }
 
     public void OnGUI() {
@@ -1806,9 +1810,9 @@ public class AimScript:MonoBehaviour{
     		help_text_offset = 0f;
 
     		DrawHelpLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true);
-    		if(!show_help){
+    		/*if(!show_help){
     			DrawHelpLine("View help: Press [ ? ]", !help_ever_shown);
-    		} else {
+    		} else {*/
     			DrawHelpLine("Hide help: Press [ ? ]");
     			DrawHelpLine("");
     			if(tape_in_progress){
@@ -1850,47 +1854,47 @@ public class AimScript:MonoBehaviour{
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
 						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
-    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward());
+    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward(), "pull back slide");
 						} else {
-    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
+    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide(), "pull back slide");
 						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-    						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock());
+    						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock(), "slide lock");
     					}
     				}
     				if(gun_script.HasSafety()){
-    					DrawHelpLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn());
+    					DrawHelpLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn(), "safety");
     				}
     				if(gun_script.HasAutoMod()){
-    					DrawHelpLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod());
+    					DrawHelpLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod(), "auto mod toggle");
     				}
     				if(gun_script.HasHammer()){
-    					DrawHelpLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer());
+    					DrawHelpLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer(), "hammer");
     				}
     				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
-    					DrawHelpLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt());
+    					DrawHelpLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt(), "toggle bolt lock");
     				}
     				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
-    					DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance());
+    					DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance(), "toggle stance");
     				}
     				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
-    						DrawHelpLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
+    						DrawHelpLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0), "swing out cylinder");
     					} else {
-    						DrawHelpLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
-    						DrawHelpLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings());
-    						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    						DrawHelpLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0), "close cylinder");
+    						DrawHelpLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings(), "extractor rod");
+    						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0), "insert");
     					}
     					DrawHelpLine("Spin cylinder: [ mousewheel ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
-    					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0), "insert");
     				}
     				if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
-    						DrawHelpLine("Insert magazine: tap [ z ]", should_insert_mag);
+    						DrawHelpLine("Insert magazine: tap [ z ]", should_insert_mag, "insert");
     					} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
-    						DrawHelpLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag());
+    						DrawHelpLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag(), "eject/drop");
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
@@ -1900,7 +1904,7 @@ public class AimScript:MonoBehaviour{
     				}
     			} else {
     				if(CanLoadBulletsInMag()){
-    					DrawHelpLine("Insert bullet in magazine: tap [ z ]", true);
+    					DrawHelpLine("Insert bullet in magazine: tap [ z ]", true, "insert");
     				}
     				if(CanRemoveBulletFromMag()){
     					DrawHelpLine("Remove bullet from magazine: tap [ r ]");
@@ -1939,7 +1943,7 @@ public class AimScript:MonoBehaviour{
     			} else {
     				DrawHelpLine("Advanced help: Hold [ ? ]");
     			}
-    		}
+    		//}
 
     		if(hasCheated) {
     			DrawHelpLine("");
