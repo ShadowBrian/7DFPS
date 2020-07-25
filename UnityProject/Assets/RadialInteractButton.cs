@@ -44,15 +44,16 @@ public class RadialInteractButton : MonoBehaviour
                 ButtonsToShowList[i].SetActive(true);
                 float angle = ((i - 2) * Mathf.PI / (ButtonsToShow.Length)) * anglemult;
                 Vector3 pos = new Vector3(-Mathf.Cos(angle), Mathf.Sin(angle), 0f) * 200f;
-                ButtonsToShowList[i].transform.localPosition = Vector3.Lerp(ButtonsToShowList[i].transform.localPosition, value ? pos : pos/2f, 0.1f);
+                ButtonsToShowList[i].transform.localPosition = Vector3.Lerp(ButtonsToShowList[i].transform.localPosition, value ? pos : pos/2f, 0.5f);
                 ButtonsToShowList[i].transform.localScale = Vector3.Lerp(ButtonsToShowList[i].transform.localScale, value ? Vector3.one : Vector3.zero,0.1f);
-                if (!value && N > 30) {
+                if (!value) {
                     ButtonsToShowList[i].SetActive(false);
                 }
             }
             yield return null;
             N++;
         }
+        
     }
 
     public void OnReleased() {
