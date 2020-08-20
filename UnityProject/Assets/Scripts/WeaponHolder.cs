@@ -1,6 +1,11 @@
 using UnityEngine;
 using System;
 
+#if UNITY_EDITOR
+using UnityEditor;
+using System.IO;
+#endif
+
 public class WeaponHolder : MonoBehaviour {
     public string display_name = "My Gun";
 
@@ -15,8 +20,6 @@ public class WeaponHolder : MonoBehaviour {
         if(mod == null)
             return; // Don't need to load anything if it isn't a mod placeholder
 
-        mod.Load();
-
         WeaponHolder holder = mod.mainAsset.GetComponent<WeaponHolder>();
         this.display_name = holder.display_name;
 
@@ -26,3 +29,24 @@ public class WeaponHolder : MonoBehaviour {
         this.casing_object = holder.casing_object;
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(WeaponHolder))]
+public class WeaponHolderEditor : Editor {
+    string mainAssetName = Path.GetFileNameWithoutExtension(ModManager.GetMainAssetName(ModType.Gun));
+    
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+
+        if(((WeaponHolder)target).display_name == "My Gun")
+            EditorGUILayout.HelpBox($"Please consider giving your gun a new name!\nThis name will be visible in the gun selection menu!", MessageType.Warning);
+
+        if(target.name != mainAssetName) {
+            EditorGUILayout.HelpBox($"If you plan on loading this gun as a mod, then you need to name the prefab: \"{mainAssetName}\"!", MessageType.Warning);
+            if(GUILayout.Button($"Set name to \"{mainAssetName}\"")) {
+                AssetDatabase.RenameAsset(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(target), mainAssetName);
+            }
+        }
+    }
+}
+#endif
