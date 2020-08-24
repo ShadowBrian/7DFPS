@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 public class ModManager : Singleton<ModManager> {
     public static List<Mod> importedMods = new List<Mod>();
 
-    public InbuildMod[] inbuildMods;
     private SteamScript steamScript;
 
     public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
@@ -25,10 +24,6 @@ public class ModManager : Singleton<ModManager> {
         //Make sure these folders are generated if they don't exist
         if(!Directory.Exists(GetModsfolderPath())) {
             Directory.CreateDirectory(GetModsfolderPath());
-
-            // Generate inbuild mods
-            foreach (var mod in inbuildMods)
-                mod.Generate();
         }
     }
 
@@ -49,7 +44,7 @@ public class ModManager : Singleton<ModManager> {
     }
 
     public static IEnumerable<Mod> GetAvailableMods(ModType type) {
-        return importedMods.Where((mod) => mod.modType == type && !mod.ignore);
+        return importedMods.Where((mod) => mod.modType == type && !mod.steamworksItem.ignore);
     }
 
     public static String GetMainAssetName(ModType modType) {
@@ -114,7 +109,6 @@ public class Mod {
     [SerializeField] private bool isLocal = false;
 
     public string path;
-    public bool ignore = false;
     [NonSerialized] public AssetBundle assetBundle;
 
     [NonSerialized] public GameObject mainAsset;
@@ -144,28 +138,5 @@ public class Mod {
 
     public string GetThumbnailPath() {
         return Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg");
-    }
-}
-
-[System.Serializable]
-public class InbuildMod {
-    public string name;
-    public TextAsset[] files;
-
-    public void Generate() {
-        try {
-            // Create directory
-            string directory = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_inbuild_{name}");
-            Directory.CreateDirectory(directory);
-
-            // Create files
-            foreach(TextAsset file in files) {
-                string path = Path.Combine(directory, file.name);
-                File.Create(path).Close();
-                File.WriteAllBytes(path, file.bytes);
-            }
-        } catch (Exception e) {
-            Debug.LogError(e);
-        }
     }
 }
