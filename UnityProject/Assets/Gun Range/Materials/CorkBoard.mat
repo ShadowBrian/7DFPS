@@ -33,6 +33,8 @@ Material:
   disabledShaderPasses:
   - TransparentBackface
   - MOTIONVECTORS
+  - TransparentDepthPrepass
+  - TransparentDepthPostpass
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -78,7 +80,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_A1476DC8: 1
-    - Vector1_CE7E03F8: 0.86
+    - Vector1_CE7E03F8: 0.9
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 0
     - _AlphaSrcBlend: 1
@@ -118,6 +120,8 @@ Material:
     - _SurfaceType: 0
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
+    - _TransparentDepthPostpassEnable: 0
+    - _TransparentDepthPrepassEnable: 0
     - _TransparentSortPriority: 0
     - _TransparentZWrite: 0
     - _UVSec: 0
